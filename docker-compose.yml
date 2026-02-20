@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: votacao-postgres
+    environment:
+      POSTGRES_DB: votacao
+      POSTGRES_USER: votacao
+      POSTGRES_PASSWORD: votacao
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: votacao-app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/votacao
+      SPRING_DATASOURCE_USERNAME: votacao
+      SPRING_DATASOURCE_PASSWORD: votacao
+      APP_CPF_CLIENT_FAKE_ENABLED: true
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
